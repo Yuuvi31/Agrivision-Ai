@@ -1,11 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import Navbar from './components/Navbar';
-import HeroSection from './components/HeroSection';
-import HowItWorks from './components/HowItWorks';
 import ImageScanner from './components/ImageScanner';
 import ScanResults from './components/ScanResults';
 import ApiKeyModal from './components/ApiKeyModal';
-import Footer from './components/Footer';
 import { analyzeLeaf } from './services/analyzer';
 
 export default function App() {
@@ -14,94 +11,69 @@ export default function App() {
   });
 
   const [selectedImage, setSelectedImage] = useState(null);
-  const [selectedSampleId, setSelectedSampleId] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [scanResult, setScanResult] = useState(null);
   const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
-  const [apiKeyConfigured, setApiKeyConfigured] = useState(false);
 
   const resultsRef = useRef(null);
-
-  // Check API key on mount
-  useEffect(() => {
-    checkApiKeyStatus();
-  }, []);
-
-  const checkApiKeyStatus = () => {
-    const key = localStorage.getItem('agrivision_gemini_key') || import.meta.env.VITE_GEMINI_API_KEY;
-    setApiKeyConfigured(!!(key && key.trim().length > 10 && !key.includes('your_gemini')));
-  };
 
   const handleSetLang = (lang) => {
     setCurrentLang(lang);
     localStorage.setItem('agrivision_lang', lang);
   };
 
-  // Perform leaf diagnosis
   const handleAnalyze = async () => {
     if (!selectedImage) return;
     setIsAnalyzing(true);
     setScanResult(null);
 
     try {
-      const result = await analyzeLeaf(selectedImage, selectedSampleId);
+      const result = await analyzeLeaf(selectedImage);
       setScanResult(result);
-
-      // Scroll smoothly down to the results section
       setTimeout(() => {
         resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 150);
+      }, 100);
     } catch (err) {
-      console.error('Diagnostic error:', err);
-      alert('An error occurred while analyzing the leaf image. Please try another image.');
+      console.error('Diagnosis error:', err);
+      alert('Unable to analyze image with Gemini Vision. Please check your internet connection or API key.');
     } finally {
       setIsAnalyzing(false);
     }
   };
 
-  // Reset to initial scanner state
   const handleReset = () => {
     setSelectedImage(null);
-    setSelectedSampleId(null);
     setScanResult(null);
     setIsAnalyzing(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
-    <div className="min-h-screen leaf-pattern flex flex-col text-slate-800">
+    <div className="min-h-screen dark-grid-pattern flex flex-col text-zinc-100">
       
-      {/* Top Navigation */}
+      {/* Sleek Minimal Navbar */}
       <Navbar
         currentLang={currentLang}
         setLang={handleSetLang}
         onOpenApiKeyModal={() => setIsApiKeyModalOpen(true)}
-        apiKeyConfigured={apiKeyConfigured}
+        isAnalyzing={isAnalyzing}
       />
 
-      {/* Main Content */}
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-4">
+      {/* Main Focus Area */}
+      <main className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 py-8 sm:py-12 flex flex-col items-center justify-center">
         
-        {/* Hero Section */}
-        <HeroSection currentLang={currentLang} />
-
-        {/* How It Works (3 Steps) */}
-        <HowItWorks currentLang={currentLang} />
-
-        {/* Leaf Image Scanner (Upload / Camera / Samples) */}
+        {/* Leaf Scanner */}
         <ImageScanner
           currentLang={currentLang}
           onAnalyze={handleAnalyze}
           isAnalyzing={isAnalyzing}
           selectedImage={selectedImage}
           setSelectedImage={setSelectedImage}
-          selectedSampleId={selectedSampleId}
-          setSelectedSampleId={setSelectedSampleId}
           onReset={handleReset}
         />
 
-        {/* Diagnostic Results (Smooth fade-in) */}
-        <div ref={resultsRef}>
+        {/* Results Container */}
+        <div ref={resultsRef} className="w-full">
           {scanResult && (
             <ScanResults
               result={scanResult}
@@ -113,16 +85,27 @@ export default function App() {
 
       </main>
 
+      {/* Minimalist Single-Line Footer */}
+      <footer className="py-6 border-t border-white/[0.04] text-center text-xs text-zinc-500 font-mono">
+        <div className="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <span>Agrivision — Gemini Vision Plant Pathology</span>
+          <a
+            href="https://github.com/Yuuvi31/Agrivision-Ai"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-zinc-300 transition-colors"
+          >
+            GitHub Repository
+          </a>
+        </div>
+      </footer>
+
       {/* API Key Modal */}
       <ApiKeyModal
         isOpen={isApiKeyModalOpen}
         onClose={() => setIsApiKeyModalOpen(false)}
-        currentLang={currentLang}
-        onKeySaved={checkApiKeyStatus}
+        onKeySaved={() => {}}
       />
-
-      {/* Footer */}
-      <Footer currentLang={currentLang} />
 
     </div>
   );

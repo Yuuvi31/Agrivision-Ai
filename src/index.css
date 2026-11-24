@@ -3,49 +3,50 @@
 @tailwind utilities;
 
 @layer base {
-  html {
-    scroll-behavior: smooth;
+  body {
+    background-color: #090b0e;
+    color: #e2e8f0;
     font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
   }
 }
 
-/* Custom transitions and glow effects */
-.agri-gradient {
-  background: linear-gradient(135deg, #14532d 0%, #166534 50%, #15803d 100%);
+/* Subtle dark grid backdrop */
+.dark-grid-pattern {
+  background-color: #090b0e;
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.08) 0%, transparent 60%),
+    radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 100% 100%, 24px 24px;
 }
 
-.agri-gradient-subtle {
-  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #f6f8f5 100%);
+/* Dark glassmorphism */
+.glass-panel {
+  background: rgba(18, 22, 28, 0.7);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.glass-card {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(22, 163, 74, 0.15);
+.glass-panel-hover:hover {
+  border-color: rgba(16, 185, 129, 0.3);
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.06);
 }
 
-.leaf-pattern {
-  background-color: #f7faf6;
-  background-image: radial-gradient(#dcfce7 0.75px, transparent 0.75px), radial-gradient(#dcfce7 0.75px, #f7faf6 0.75px);
-  background-size: 30px 30px;
-  background-position: 0 0, 15px 15px;
-}
-
-/* Custom scrollbars */
+/* Minimal custom scrollbars */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #090b0e;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #86efac;
-  border-radius: 4px;
+  background: #27272a;
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #4ade80;
+  background: #3f3f46;
 }
