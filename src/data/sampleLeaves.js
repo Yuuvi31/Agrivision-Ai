@@ -1,3 +1,4 @@
+// Curated botanical leaf sample images with realistic visual leaf rendering
 export const SAMPLE_LEAVES = [
   {
     id: 'sample-tomato-early-blight',
@@ -11,7 +12,7 @@ export const SAMPLE_LEAVES = [
     diseaseHinglish: 'Early Blight Fungus Rog',
     confidence: 96,
     severity: 'Moderate (मध्यम)',
-    image: 'https://images.unsplash.com/photo-1592878904946-b3cd8ae243d0?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1597848212624-a19eb35e2651?auto=format&fit=crop&w=800&q=80',
     description: 'Concentric brown ring spots (target-like patterns) visible on lower foliage, progressing toward yellowing edges.',
     recommendations: {
       en: {
@@ -112,7 +113,7 @@ export const SAMPLE_LEAVES = [
     diseaseHinglish: 'Koi Bimari Nahi (Healthy Leaf)',
     confidence: 99,
     severity: 'None (कोई खतरा नहीं)',
-    image: 'https://images.unsplash.com/photo-1541443131876-44b03de101c5?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=800&q=80',
     description: 'Deep green chlorophyll pigmentation, smooth veins, crisp leaf margins, zero fungal spots or insect damage.',
     recommendations: {
       en: {
@@ -210,7 +211,7 @@ export const SAMPLE_LEAVES = [
     diseaseHinglish: 'Late Blight Rog',
     confidence: 94,
     severity: 'High (गंभीर)',
-    image: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=800&q=80',
     description: 'Irregular water-soaked dark lesions spreading rapidly across foliage with pale green margin and white mold on undersides during humid weather.',
     recommendations: {
       en: {
@@ -311,7 +312,7 @@ export const SAMPLE_LEAVES = [
     diseaseHinglish: 'Koi Rog Nahi (Swasth Dhaan)',
     confidence: 98,
     severity: 'None (उत्तम स्वास्थ्य)',
-    image: 'https://images.unsplash.com/photo-1536657464919-892534f60d6e?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?auto=format&fit=crop&w=800&q=80',
     description: 'Slender vibrant green blades, healthy photosynthetic surface area, free of blast lesions, bacterial streak, or stem borer marks.',
     recommendations: {
       en: {
@@ -400,7 +401,7 @@ export const SAMPLE_LEAVES = [
     diseaseHinglish: 'Corn Rust Fungal Rog',
     confidence: 93,
     severity: 'Moderate (मध्यम)',
-    image: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1530595467537-0b5996c41f2d?auto=format&fit=crop&w=800&q=80',
     description: 'Golden-brown to cinnamon colored pustules scattered across both upper and lower leaf surfaces.',
     recommendations: {
       en: {
