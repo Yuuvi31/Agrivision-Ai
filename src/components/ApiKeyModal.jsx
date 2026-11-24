@@ -7,7 +7,7 @@ export default function ApiKeyModal({ isOpen, onClose, onKeySaved }) {
 
   useEffect(() => {
     if (isOpen) {
-      const existing = localStorage.getItem('agrivision_gemini_key') || '';
+      const existing = localStorage.getItem('agrivision_openai_key') || '';
       setApiKey(existing);
       setSavedSuccess(false);
     }
@@ -17,9 +17,9 @@ export default function ApiKeyModal({ isOpen, onClose, onKeySaved }) {
 
   const handleSave = () => {
     if (apiKey.trim()) {
-      localStorage.setItem('agrivision_gemini_key', apiKey.trim());
+      localStorage.setItem('agrivision_openai_key', apiKey.trim());
     } else {
-      localStorage.removeItem('agrivision_gemini_key');
+      localStorage.removeItem('agrivision_openai_key');
     }
     setSavedSuccess(true);
     onKeySaved();
@@ -43,10 +43,10 @@ export default function ApiKeyModal({ isOpen, onClose, onKeySaved }) {
           </div>
           <div>
             <h3 className="text-base font-semibold text-zinc-100">
-              Gemini Vision Configuration
+              API Key Configuration
             </h3>
             <p className="text-xs text-zinc-400">
-              Powered by Google Gemini 3.5
+              Botanical Vision Diagnostics
             </p>
           </div>
         </div>
@@ -54,31 +54,31 @@ export default function ApiKeyModal({ isOpen, onClose, onKeySaved }) {
         <div className="p-3 rounded-xl bg-dark-950 border border-white/[0.06] text-xs text-zinc-300 mb-4 flex items-start gap-2">
           <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
           <p className="leading-relaxed">
-            Your custom Gemini Vision API key is loaded and used directly for multimodal botanical pathology analysis.
+            Your custom OpenAI API key is loaded and used directly for multimodal botanical pathology analysis.
           </p>
         </div>
 
         <div className="mb-4">
           <label className="block text-xs font-mono text-zinc-400 mb-1.5">
-            Gemini API Key
+            OpenAI API Key
           </label>
           <input
             type="password"
             value={apiKey}
             onChange={(e) => setApiKey(e.target.value)}
-            placeholder="AQ.Ab8RN..."
+            placeholder="sk-proj-..."
             className="w-full px-3.5 py-2.5 rounded-lg bg-dark-950 border border-white/[0.1] focus:border-emerald-500 focus:outline-none text-xs text-zinc-200 font-mono transition-all"
           />
         </div>
 
         <div className="flex items-center justify-between gap-3 pt-2">
           <a
-            href="https://aistudio.google.com/app/apikey"
+            href="https://platform.openai.com/api-keys"
             target="_blank"
             rel="noopener noreferrer"
             className="text-[11px] text-zinc-400 hover:text-emerald-400 inline-flex items-center gap-1 transition-colors"
           >
-            <span>Google AI Studio</span>
+            <span>OpenAI Platform</span>
             <ExternalLink className="w-3 h-3" />
           </a>
 

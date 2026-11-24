@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { 
+import {
   CheckCircle2, 
   AlertTriangle, 
   Volume2, 
@@ -11,6 +11,7 @@ import {
   Sparkles,
   AlertCircle
 } from 'lucide-react';
+import { UI_TRANSLATIONS } from '../data/languages';
 
 export default function ScanResults({ result, currentLang, onReset }) {
   const [remedyLang, setRemedyLang] = useState(currentLang || 'en');
@@ -44,7 +45,7 @@ export default function ScanResults({ result, currentLang, onReset }) {
           </h2>
 
           <p className="text-sm text-zinc-300 max-w-lg mx-auto mb-4 leading-relaxed">
-            {result.notLeafReason || 'Gemini Vision detected that this photo does not depict a plant leaf, crop foliage, or agricultural vegetation.'}
+            {result.notLeafReason || 'OpenAI Vision detected that this photo does not depict a plant leaf, crop foliage, or agricultural vegetation.'}
           </p>
 
           <p className="text-xs text-zinc-500 mb-6">
@@ -64,6 +65,7 @@ export default function ScanResults({ result, currentLang, onReset }) {
   }
 
   // 2. VALID PLANT LEAF DIAGNOSIS
+  const t = UI_TRANSLATIONS[remedyLang] || UI_TRANSLATIONS.en;
   const isHealthy = result.status === 'healthy';
   const recommendations = result.recommendations?.[remedyLang] || result.recommendations?.en || {};
 
@@ -134,12 +136,12 @@ export default function ScanResults({ result, currentLang, onReset }) {
                 : 'bg-amber-500/10 text-amber-400 border-amber-500/30'
             }`}>
               {isHealthy ? <CheckCircle2 className="w-3.5 h-3.5" /> : <AlertTriangle className="w-3.5 h-3.5" />}
-              <span>{isHealthy ? 'Healthy Leaf' : 'Needs Care'}</span>
+              <span>{isHealthy ? t.healthyState : t.unhealthyState}</span>
             </span>
 
             {result.confidence && (
               <span className="text-[11px] font-mono text-zinc-400 px-2 py-0.5 rounded-md bg-dark-950 border border-white/[0.06]">
-                {result.confidence}% Confidence
+                {result.confidence}% {t.confidence}
               </span>
             )}
           </div>
@@ -183,7 +185,7 @@ export default function ScanResults({ result, currentLang, onReset }) {
             }`}
           >
             {isSpeaking ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
-            <span>{isSpeaking ? 'Stop Audio' : 'Listen'}</span>
+            <span>{isSpeaking ? t.stopAudio : t.listenAudio}</span>
           </button>
 
           <button
@@ -191,7 +193,7 @@ export default function ScanResults({ result, currentLang, onReset }) {
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-zinc-800/80 hover:bg-zinc-700 text-zinc-200 border border-white/[0.08] transition-all"
           >
             {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-            <span>{copied ? 'Copied' : 'Copy'}</span>
+            <span>{copied ? t.copied : t.copySummary}</span>
           </button>
 
           <button
@@ -199,7 +201,7 @@ export default function ScanResults({ result, currentLang, onReset }) {
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/20 transition-all"
           >
             <Share2 className="w-3.5 h-3.5" />
-            <span>Share</span>
+            <span>{t.shareWhatsApp}</span>
           </button>
 
           <button
@@ -207,7 +209,7 @@ export default function ScanResults({ result, currentLang, onReset }) {
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/60 ml-auto transition-all"
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            <span>Scan Another</span>
+            <span>{t.resetBtn}</span>
           </button>
         </div>
 
@@ -253,11 +255,11 @@ export default function ScanResults({ result, currentLang, onReset }) {
         {/* Sub-category pills */}
         <div className="flex items-center gap-1.5 overflow-x-auto py-3 border-b border-white/[0.06] scrollbar-none">
           {[
-            { id: 'action', label: 'Immediate Action' },
-            { id: 'organic', label: 'Organic & Neem' },
-            { id: 'chemical', label: 'Chemical / Spray' },
-            { id: 'watering', label: 'Water & Soil' },
-            { id: 'prevention', label: 'Prevention' },
+            { id: 'action', label: t.remedyTabs.action },
+            { id: 'organic', label: t.remedyTabs.organic },
+            { id: 'chemical', label: t.remedyTabs.chemical },
+            { id: 'watering', label: t.remedyTabs.watering },
+            { id: 'prevention', label: t.remedyTabs.prevention },
           ].map((tab) => (
             <button
               key={tab.id}

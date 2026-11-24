@@ -35,7 +35,7 @@ export default function App() {
       }, 100);
     } catch (err) {
       console.error('Diagnosis error:', err);
-      alert('Unable to analyze image with Gemini Vision. Please check your internet connection or API key.');
+      alert(err?.message || 'Unable to analyze image. Please check your API key and billing/quota.');
     } finally {
       setIsAnalyzing(false);
     }
@@ -88,7 +88,7 @@ export default function App() {
       {/* Minimalist Single-Line Footer */}
       <footer className="py-6 border-t border-white/[0.04] text-center text-xs text-zinc-500 font-mono">
         <div className="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>Agrivision — Gemini Vision Plant Pathology</span>
+          <span>Agrivision — Botanical Vision Diagnostics</span>
           <a
             href="https://github.com/Yuuvi31/Agrivision-Ai"
             target="_blank"

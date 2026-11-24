@@ -1,15 +1,8 @@
-// API key is loaded from .env (VITE_GEMINI_API_KEY) or from in-app settings modal
-const DEFAULT_GEMINI_KEY = '';
+// API key is loaded from .env (VITE_OPENAI_API_KEY) or from in-app settings modal
+const DEFAULT_OPENAI_KEY = '';
 
-// Ordered model cascade: fastest confirmed models first
-const MODEL_CASCADE = [
-  'gemini-3.5-flash-lite',   // ~1s, confirmed fast
-  'gemini-3.5-flash',        // fallback
-  'gemini-flash-lite-latest', // fallback
-  'gemini-3.6-flash',        // slower, last resort
-  'gemini-3.7-flash',
-  'gemini-3.8-flash',
-];
+// OpenAI vision model to use
+const OPENAI_MODEL = 'gpt-4o';
 
 const ANALYSIS_PROMPT = `You are Agrivision, a genuine computer vision botanical plant pathologist.
 Examine this image with extreme care.
@@ -32,34 +25,42 @@ If the image IS a plant leaf:
 {"isLeaf":true,"notLeafReason":"","status":"healthy or unhealthy","crop":"Crop (Botanical name)","disease":"Disease name or None (Healthy Plant)","diseaseHi":"Hindi disease name","diseaseHinglish":"Hinglish disease name","confidence":95,"severity":"None/Mild/Moderate/Severe","visualObservations":"One-line description of what you see on the leaf surface.","recommendations":{"en":{"diagnosisSummary":"2-3 sentences.","immediateAction":["step1","step2"],"organicSolution":["neem/bio tip1","tip2"],"chemicalSolution":["fungicide dose1","dose2"],"wateringAndSoil":["water tip1","soil tip2"],"preventionTips":["prev1","prev2"]},"hi":{"diagnosisSummary":"हिंदी में 2-3 वाक्य।","immediateAction":["कदम 1","कदम 2"],"organicSolution":["नीम उपाय 1","उपाय 2"],"chemicalSolution":["दवा 1","दवा 2"],"wateringAndSoil":["सिंचाई 1","मिट्टी 2"],"preventionTips":["बचाव 1","बचाव 2"]},"hinglish":{"diagnosisSummary":"Hinglish mein 2-3 lines.","immediateAction":["Step 1","Step 2"],"organicSolution":["Neem spray 1","Tip 2"],"chemicalSolution":["Spray dose 1","Dose 2"],"wateringAndSoil":["Paani tip 1","Mitti tip 2"],"preventionTips":["Bachav 1","Tip 2"]}}}`;
 
 /**
- * Calls a single Gemini model with the leaf image.
+ * Calls OpenAI GPT-4o Vision with the leaf image.
  * Returns parsed JSON result or throws on failure.
  */
-async function callGeminiModel(modelName, base64Data, mimeType, apiKey) {
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+async function callOpenAIVision(base64Data, mimeType, apiKey) {
+  const endpoint = 'https://api.openai.com/v1/chat/completions';
 
-  // 15-second timeout per model attempt
+  // 30-second timeout
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 15000);
+  const timeoutId = setTimeout(() => controller.abort(), 30000);
 
   let resp;
   try {
     resp = await fetch(endpoint, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+      },
       signal: controller.signal,
       body: JSON.stringify({
-        contents: [{
-          parts: [
-            { text: ANALYSIS_PROMPT },
-            { inline_data: { mime_type: mimeType, data: base64Data } }
-          ]
-        }],
-        generationConfig: {
-          temperature: 0.15,
-          topP: 0.8,
-          responseMimeType: 'application/json'
-        }
+        model: OPENAI_MODEL,
+        messages: [
+          {
+            role: 'user',
+            content: [
+              { type: 'text', text: ANALYSIS_PROMPT },
+              {
+                type: 'image_url',
+                image_url: { url: `data:${mimeType};base64,${base64Data}`, detail: 'high' }
+              }
+            ]
+          }
+        ],
+        temperature: 0.15,
+        response_format: { type: 'json_object' },
+        max_tokens: 1500,
       })
     });
   } finally {
@@ -68,13 +69,13 @@ async function callGeminiModel(modelName, base64Data, mimeType, apiKey) {
 
   if (!resp.ok) {
     const errBody = await resp.text().catch(() => '');
-    throw new Error(`${modelName} HTTP ${resp.status}: ${errBody.slice(0, 200)}`);
+    throw new Error(`OpenAI HTTP ${resp.status}: ${errBody.slice(0, 200)}`);
   }
 
   const json = await resp.json();
-  const rawText = json.candidates?.[0]?.content?.parts?.[0]?.text;
+  const rawText = json.choices?.[0]?.message?.content;
   if (!rawText) {
-    throw new Error(`${modelName} returned empty content.`);
+    throw new Error('OpenAI returned empty content.');
   }
 
   const cleaned = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
@@ -83,16 +84,16 @@ async function callGeminiModel(modelName, base64Data, mimeType, apiKey) {
 
 /**
  * Main entry point. Extracts base64 from the image source,
- * then cascades through Gemini models until one succeeds.
+ * then calls OpenAI GPT-4o Vision for analysis.
  */
 export async function analyzeLeaf(imageSrc) {
   const localKey = typeof localStorage !== 'undefined'
-    ? localStorage.getItem('agrivision_gemini_key')
+    ? localStorage.getItem('agrivision_openai_key')
     : null;
   const envKey = typeof import.meta !== 'undefined' && import.meta.env
-    ? import.meta.env.VITE_GEMINI_API_KEY
+    ? import.meta.env.VITE_OPENAI_API_KEY
     : null;
-  const apiKey = (localKey || envKey || DEFAULT_GEMINI_KEY).trim();
+  const apiKey = (localKey || envKey || DEFAULT_OPENAI_KEY).trim();
 
   // Extract base64 and mime type
   let base64Data, mimeType = 'image/jpeg';
@@ -114,27 +115,18 @@ export async function analyzeLeaf(imageSrc) {
     base64Data = btoa(binary);
   }
 
-  // Cascade through models
-  let lastError = null;
-  for (const model of MODEL_CASCADE) {
-    try {
-      console.log(`[Agrivision] Trying model: ${model}`);
-      const result = await callGeminiModel(model, base64Data, mimeType, apiKey);
-      console.log(`[Agrivision] Success with model: ${model}`);
-      return {
-        ...result,
-        imageUrl: imageSrc,
-        source: `Gemini Vision (${model})`
-      };
-    } catch (err) {
-      console.warn(`[Agrivision] ${model} failed:`, err.message);
-      lastError = err;
-      // Continue to next model in cascade
-    }
+  try {
+    console.log(`[Agrivision] Calling OpenAI ${OPENAI_MODEL}...`);
+    const result = await callOpenAIVision(base64Data, mimeType, apiKey);
+    console.log(`[Agrivision] Success with OpenAI ${OPENAI_MODEL}`);
+    return {
+      ...result,
+      imageUrl: imageSrc,
+      source: `OpenAI ${OPENAI_MODEL} Vision`
+    };
+  } catch (err) {
+    throw new Error(
+      `OpenAI Vision analysis failed: ${err.message}. Please check your API key and try again.`
+    );
   }
-
-  // All models failed
-  throw new Error(
-    `All Gemini Vision models are currently unavailable. Last error: ${lastError?.message || 'Unknown'}. Please try again in a few seconds.`
-  );
 }

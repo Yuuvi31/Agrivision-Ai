@@ -15,10 +15,6 @@ export default function Navbar({ currentLang, setLang, onOpenApiKeyModal, isAnal
             <span className="font-semibold text-base tracking-tight text-zinc-100 font-sans">
               Agrivision
             </span>
-            <div className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono tracking-wide bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Gemini 3.5 Vision</span>
-            </div>
           </div>
         </div>
 
@@ -63,7 +59,7 @@ export default function Navbar({ currentLang, setLang, onOpenApiKeyModal, isAnal
           <button
             onClick={onOpenApiKeyModal}
             className="p-2 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/60 border border-transparent hover:border-white/[0.08] transition-all"
-            title="Configure Gemini Vision API Key"
+            title="Configure API Key"
           >
             <Key className="w-4 h-4" />
           </button>

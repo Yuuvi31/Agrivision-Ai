@@ -11,6 +11,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { SAMPLE_LEAVES } from '../data/sampleLeaves';
+import { UI_TRANSLATIONS } from '../data/languages';
 
 export default function ImageScanner({ 
   currentLang, 
@@ -32,6 +33,7 @@ export default function ImageScanner({
   const videoRef = useRef(null);
   const streamRef = useRef(null);
   const fileInputRef = useRef(null);
+  const t = UI_TRANSLATIONS[currentLang] || UI_TRANSLATIONS.en;
 
   const stopCamera = () => {
     if (streamRef.current) {
@@ -115,10 +117,10 @@ export default function ImageScanner({
       {/* Minimal Header */}
       <div className="text-center mb-6">
         <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-zinc-100">
-          Plant Pathology Scanner
+          {t.scanCardTitle}
         </h1>
         <p className="text-xs sm:text-sm text-zinc-400 mt-1 max-w-md mx-auto">
-          Upload any plant leaf for authentic Gemini Vision pathology analysis and multi-lingual remediation.
+          {t.subtitle}
         </p>
       </div>
 
@@ -137,7 +139,7 @@ export default function ImageScanner({
               }`}
             >
               <Upload className="w-3.5 h-3.5" />
-              <span>Upload</span>
+              <span>{t.uploadTab}</span>
             </button>
             <button
               onClick={() => { setActiveMode('camera'); startCamera(); }}
@@ -148,7 +150,7 @@ export default function ImageScanner({
               }`}
             >
               <Camera className="w-3.5 h-3.5" />
-              <span>Live Camera</span>
+              <span>{t.cameraTab}</span>
             </button>
           </div>
 
@@ -196,7 +198,7 @@ export default function ImageScanner({
                 {isAnalyzing && (
                   <div className="absolute inset-0 bg-dark-950/70 backdrop-blur-xs flex flex-col items-center justify-center z-10 text-white p-6 text-center animate-fade-in">
                     <div className="w-10 h-10 rounded-full border-2 border-emerald-500/30 border-t-emerald-400 animate-spin mb-3" />
-                    <p className="text-sm font-medium tracking-tight text-zinc-100">Analyzing leaf with Gemini Vision...</p>
+                    <p className="text-sm font-medium tracking-tight text-zinc-100">{t.analyzing}</p>
                     <p className="text-xs text-zinc-400 mt-1 font-mono">Examining cellular structures & symptoms</p>
                   </div>
                 )}
@@ -224,7 +226,7 @@ export default function ImageScanner({
                     className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-5 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-dark-950 font-semibold text-xs transition-all shadow-[0_0_20px_rgba(16,185,129,0.25)] active:scale-98 disabled:opacity-40"
                   >
                     <Sparkles className="w-3.5 h-3.5" />
-                    <span>{isAnalyzing ? 'Analyzing...' : 'Diagnose Leaf'}</span>
+                    <span>{isAnalyzing ? t.analyzing : t.analyzeBtn}</span>
                   </button>
                 </div>
               </div>
@@ -259,10 +261,10 @@ export default function ImageScanner({
                   </div>
 
                   <p className="text-sm font-medium text-zinc-200 mb-1">
-                    Drop a leaf image here, or browse
+                    {t.dropText}
                   </p>
                   <p className="text-xs text-zinc-500 font-mono">
-                    PNG, JPG, WEBP up to 10MB
+                    {t.supportedFormats}
                   </p>
                 </div>
               )}
@@ -290,7 +292,7 @@ export default function ImageScanner({
                         <button
                           onClick={toggleFacing}
                           className="p-2.5 rounded-lg bg-zinc-900 border border-white/[0.08] text-zinc-300 hover:bg-zinc-800"
-                          title="Switch camera"
+                          title={t.switchCamera}
                         >
                           <FlipHorizontal className="w-4 h-4" />
                         </button>
@@ -300,7 +302,7 @@ export default function ImageScanner({
                           className="px-5 py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-dark-950 font-semibold text-xs flex items-center gap-2"
                         >
                           <Camera className="w-4 h-4" />
-                          <span>Capture Photo</span>
+                          <span>{t.capturePhoto}</span>
                         </button>
 
                         <button
@@ -318,19 +320,26 @@ export default function ImageScanner({
               {/* Minimal Demo Leaf Pills */}
               <div className="mt-5 pt-4 border-t border-white/[0.06]">
                 <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-500 block mb-2">
-                  Quick test samples:
+                  {t.demoNote}
                 </span>
                 <div className="flex flex-wrap items-center gap-2">
-                  {SAMPLE_LEAVES.slice(0, 4).map((sample) => (
-                    <button
-                      key={sample.id}
-                      onClick={() => setSelectedImage(sample.image)}
-                      className="px-2.5 py-1.5 rounded-lg bg-dark-900 hover:bg-zinc-800/80 border border-white/[0.08] text-zinc-300 hover:text-white text-xs font-medium transition-all flex items-center gap-1.5"
-                    >
-                      <span className={`w-1.5 h-1.5 rounded-full ${sample.status === 'healthy' ? 'bg-emerald-400' : 'bg-amber-400'}`} />
-                      <span>{sample.name.split('(')[0]}</span>
-                    </button>
-                  ))}
+                  {SAMPLE_LEAVES.slice(0, 4).map((sample) => {
+                    const sampleLabel = currentLang === 'hi'
+                      ? sample.nameHi.split('(')[0]
+                      : currentLang === 'hinglish'
+                      ? sample.nameHinglish.split('(')[0]
+                      : sample.name.split('(')[0];
+                    return (
+                      <button
+                        key={sample.id}
+                        onClick={() => setSelectedImage(sample.image)}
+                        className="px-2.5 py-1.5 rounded-lg bg-dark-900 hover:bg-zinc-800/80 border border-white/[0.08] text-zinc-300 hover:text-white text-xs font-medium transition-all flex items-center gap-1.5"
+                      >
+                        <span className={`w-1.5 h-1.5 rounded-full ${sample.status === 'healthy' ? 'bg-emerald-400' : 'bg-amber-400'}`} />
+                        <span>{sampleLabel}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>
