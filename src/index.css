@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  }
+}
+
+/* Custom transitions and glow effects */
+.agri-gradient {
+  background: linear-gradient(135deg, #14532d 0%, #166534 50%, #15803d 100%);
+}
+
+.agri-gradient-subtle {
+  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #f6f8f5 100%);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(22, 163, 74, 0.15);
+}
+
+.leaf-pattern {
+  background-color: #f7faf6;
+  background-image: radial-gradient(#dcfce7 0.75px, transparent 0.75px), radial-gradient(#dcfce7 0.75px, #f7faf6 0.75px);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #86efac;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4ade80;
+}
