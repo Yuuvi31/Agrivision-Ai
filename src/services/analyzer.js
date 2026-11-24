@@ -1,15 +1,14 @@
 // API key is loaded from .env (VITE_GEMINI_API_KEY) or from in-app settings modal
 const DEFAULT_GEMINI_KEY = '';
 
-// Ordered model cascade: try each until one responds
+// Ordered model cascade: fastest confirmed models first
 const MODEL_CASCADE = [
-  'gemini-3.6-flash',
-  'gemini-3.5-flash-lite',
-  'gemini-3.5-flash',
+  'gemini-3.5-flash-lite',   // ~1s, confirmed fast
+  'gemini-3.5-flash',        // fallback
+  'gemini-flash-lite-latest', // fallback
+  'gemini-3.6-flash',        // slower, last resort
   'gemini-3.7-flash',
   'gemini-3.8-flash',
-  'gemini-flash-lite-latest',
-  'gemini-flash-latest',
 ];
 
 const ANALYSIS_PROMPT = `You are Agrivision, a genuine computer vision botanical plant pathologist.
@@ -39,23 +38,33 @@ If the image IS a plant leaf:
 async function callGeminiModel(modelName, base64Data, mimeType, apiKey) {
   const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
 
-  const resp = await fetch(endpoint, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{
-        parts: [
-          { text: ANALYSIS_PROMPT },
-          { inline_data: { mime_type: mimeType, data: base64Data } }
-        ]
-      }],
-      generationConfig: {
-        temperature: 0.15,
-        topP: 0.8,
-        responseMimeType: 'application/json'
-      }
-    })
-  });
+  // 15-second timeout per model attempt
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+  let resp;
+  try {
+    resp = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      signal: controller.signal,
+      body: JSON.stringify({
+        contents: [{
+          parts: [
+            { text: ANALYSIS_PROMPT },
+            { inline_data: { mime_type: mimeType, data: base64Data } }
+          ]
+        }],
+        generationConfig: {
+          temperature: 0.15,
+          topP: 0.8,
+          responseMimeType: 'application/json'
+        }
+      })
+    });
+  } finally {
+    clearTimeout(timeoutId);
+  }
 
   if (!resp.ok) {
     const errBody = await resp.text().catch(() => '');

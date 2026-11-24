@@ -12,7 +12,8 @@ export const SAMPLE_LEAVES = [
     diseaseHinglish: 'Early Blight Fungus Rog',
     confidence: 96,
     severity: 'Moderate (मध्यम)',
-    image: 'https://images.unsplash.com/photo-1597848212624-a19eb35e2651?auto=format&fit=crop&w=800&q=80',
+    // Tomato leaf with visible fungal spot damage
+    image: 'https://images.unsplash.com/photo-1562516155-e0d16cda6c9b?auto=format&fit=crop&w=800&q=80',
     description: 'Concentric brown ring spots (target-like patterns) visible on lower foliage, progressing toward yellowing edges.',
     recommendations: {
       en: {
@@ -113,7 +114,8 @@ export const SAMPLE_LEAVES = [
     diseaseHinglish: 'Koi Bimari Nahi (Healthy Leaf)',
     confidence: 99,
     severity: 'None (कोई खतरा नहीं)',
-    image: 'https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=800&q=80',
+    // Green apple leaves on branch
+    image: 'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?auto=format&fit=crop&w=800&q=80',
     description: 'Deep green chlorophyll pigmentation, smooth veins, crisp leaf margins, zero fungal spots or insect damage.',
     recommendations: {
       en: {
@@ -211,7 +213,8 @@ export const SAMPLE_LEAVES = [
     diseaseHinglish: 'Late Blight Rog',
     confidence: 94,
     severity: 'High (गंभीर)',
-    image: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=800&q=80',
+    // Potato plant with green leaves
+    image: 'https://images.unsplash.com/photo-1573246123716-6b1782bfc499?auto=format&fit=crop&w=800&q=80',
     description: 'Irregular water-soaked dark lesions spreading rapidly across foliage with pale green margin and white mold on undersides during humid weather.',
     recommendations: {
       en: {
@@ -312,7 +315,8 @@ export const SAMPLE_LEAVES = [
     diseaseHinglish: 'Koi Rog Nahi (Swasth Dhaan)',
     confidence: 98,
     severity: 'None (उत्तम स्वास्थ्य)',
-    image: 'https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?auto=format&fit=crop&w=800&q=80',
+    // Lush green leaf close-up for rice/paddy
+    image: 'https://images.unsplash.com/photo-1491553895911-0055eca6402d?auto=format&fit=crop&w=800&q=80',
     description: 'Slender vibrant green blades, healthy photosynthetic surface area, free of blast lesions, bacterial streak, or stem borer marks.',
     recommendations: {
       en: {
@@ -401,7 +405,8 @@ export const SAMPLE_LEAVES = [
     diseaseHinglish: 'Corn Rust Fungal Rog',
     confidence: 93,
     severity: 'Moderate (मध्यम)',
-    image: 'https://images.unsplash.com/photo-1530595467537-0b5996c41f2d?auto=format&fit=crop&w=800&q=80',
+    // Corn/maize green leaves in field
+    image: 'https://images.unsplash.com/photo-1601329838218-a3c8e97fc48e?auto=format&fit=crop&w=800&q=80',
     description: 'Golden-brown to cinnamon colored pustules scattered across both upper and lower leaf surfaces.',
     recommendations: {
       en: {
